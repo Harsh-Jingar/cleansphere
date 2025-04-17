@@ -73,3 +73,22 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Environment Variables
+.env
+.env.local
+.env.*
+!.env.example
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+
+# Keys and Credentials
+*.keystore
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*

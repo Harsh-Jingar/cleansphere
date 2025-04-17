@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">cleansphere</string>
+    <string name="app_name">CleanSphere</string>
+    <string name="server_client_id">692812468789-a6rps8u92mb02v8tptdj5ej26a15o9if.apps.googleusercontent.com</string>
 </resources>

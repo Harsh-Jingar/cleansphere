@@ -1,0 +1,682 @@
+=============================================================================
+                     CLEANSPHERE PROJECT DOCUMENTATION
+                         Urban Cleanliness Tracker
+                             April 16, 2025
+=============================================================================
+
+TABLE OF CONTENTS
+----------------
+1. Project Overview
+2. Technical Architecture
+3. User Roles & Permissions
+4. Feature Documentation
+5. Database Schema
+6. Authentication System
+7. Screen Descriptions
+8. State Management
+9. Offline Functionality
+10. Component Structure
+11. Future Development Plans
+12. Performance Considerations
+13. Security Implementation
+
+=============================================================================
+1. PROJECT OVERVIEW
+=============================================================================
+
+CleanSphere is a community-driven React Native mobile application designed to 
+address urban cleanliness challenges by connecting residents with municipal 
+authorities. The platform enables users to report, track, and resolve 
+cleanliness issues in their local communities.
+
+Vision:
+To create cleaner urban environments through citizen participation and
+efficient municipal response systems.
+
+Mission:
+Empower communities to take active roles in maintaining cleanliness by
+providing an accessible platform for reporting and resolving issues.
+
+Key Objectives:
+- Simplify the process of reporting cleanliness issues
+- Increase transparency in municipal waste management
+- Build community engagement around urban cleanliness
+- Provide data insights for better municipal resource allocation
+- Track impact of individual contributions to cleanliness efforts
+
+Target Audience:
+1. Residents concerned about cleanliness in their neighborhoods
+2. Municipal authorities responsible for waste management and urban cleanliness
+3. Community organizations working on environmental initiatives
+
+=============================================================================
+2. TECHNICAL ARCHITECTURE
+=============================================================================
+
+CleanSphere is built on a modern mobile stack with a client-focused architecture:
+
+Frontend:
+- React Native v0.78.2: Cross-platform mobile framework
+- React Navigation v7.x: For app navigation and routing
+- React Native Paper: Material Design component library
+- React Native Vector Icons: Icon library for UI elements
+
+Backend Services (Firebase):
+- Firebase Authentication: User authentication and management
+- Firebase Firestore: NoSQL database for storing app data
+- Firebase Storage: For storing images and media files
+- Firebase Cloud Functions (planned): For server-side processing
+
+Data Management:
+- React Context API: For global state management
+- WatermelonDB: For local data persistence and offline support
+- AsyncStorage: For storing authentication tokens and app preferences
+
+Location Services:
+- React Native Geolocation Service: For accessing device location
+- Nominatim API: For reverse geocoding (converting coordinates to addresses)
+
+Media Handling:
+- React Native Image Crop Picker: For camera access and image selection
+- React Native Vision Camera: For advanced camera functionality
+
+Development Environment:
+- TypeScript: For type safety (partial implementation)
+- ESLint: For code quality and consistency
+- Babel: For JavaScript transpilation
+
+=============================================================================
+3. USER ROLES & PERMISSIONS
+=============================================================================
+
+CleanSphere implements a role-based access control system with two primary user types:
+
+RESIDENT USERS:
+--------------
+Permissions:
+- Create new cleanliness reports with photos and location data
+- Like, comment on, and share reports
+- Follow other users and municipal authorities
+- View personal impact score and level progression
+- Edit personal profile information
+- Receive notifications about report updates
+- Browse and filter reports by status and location
+
+Account Creation:
+- Email/password registration
+- Google Sign-In integration
+- Profile customization options
+
+MUNICIPAL AUTHORITY USERS:
+-------------------------
+Permissions:
+- Access specialized dashboard view of reports
+- Mark reports as "in progress" or "resolved"
+- Upload verification photos of resolved issues
+- Assign reports to specific departments or staff members
+- Add resolution notes and documentation
+- Manage assigned geographical zones
+- View analytics on report resolution times and frequencies
+
+Account Creation:
+- Pre-approved by system administrators
+- Email/password authentication only (no social login)
+- Enhanced profile with authority verification indicators
+
+Permission Enforcement:
+- Firebase security rules control access to Firestore collections
+- Client-side conditional rendering based on user role
+- Backend validation for all municipal authority actions
+
+=============================================================================
+4. FEATURE DOCUMENTATION
+=============================================================================
+
+4.1 USER AUTHENTICATION
+----------------------
+- Multi-method authentication (email/password, Google)
+- Role-based access control (resident vs. municipal authority)
+- Secure credential storage using AsyncStorage
+- Password reset functionality
+- Session persistence between app launches
+- Account verification workflows
+- Authenticated and unauthenticated navigation states
+
+4.2 REPORTING SYSTEM
+------------------
+- Camera integration for capturing issue photos
+- Location detection with reverse geocoding for address information
+- Report categorization (garbage, graffiti, broken facilities, etc.)
+- Detailed description fields for issue reporting
+- Status tracking (pending, in progress, resolved)
+- Report history and tracking for users
+- Optional anonymity for reporters
+- Media compression for efficient upload
+
+4.3 COMMUNITY ENGAGEMENT
+----------------------
+- Social interactions (likes, comments) on reports
+- User following system to connect with active community members
+- Profile pages showcasing user activity and impact
+- Impact score system based on report submissions and resolutions
+- User level progression (Novice, Contributor, Expert, Master)
+- Activity feed of community reports
+- Sharing capabilities to external platforms
+
+4.4 NOTIFICATION SYSTEM
+---------------------
+- Real-time push notifications for report updates
+- In-app notification center with read/unread status
+- Comment and like notifications
+- Follow notifications
+- Municipal response notifications
+- Report resolution confirmations
+- System announcements for all users
+
+4.5 MUNICIPAL DASHBOARD
+---------------------
+- Specialized interface for authorized municipal users
+- Report filtering by status, date, and location
+- Resolution workflow with documentation requirements
+- "Before and after" image comparison for resolved issues
+- Assignment and tracking of responsible personnel
+- Analytics on resolution times and issue frequencies
+- Geographical zone management for authorities
+
+4.6 LOCATION SERVICES
+-------------------
+- Precise GPS location detection for accurate reporting
+- Permission handling for location access
+- Map visualization of reports (planned feature)
+- Geocoding and reverse geocoding for address display
+- Location search functionality
+- Area-based filtering of reports
+
+4.7 OFFLINE FUNCTIONALITY
+-----------------------
+- Network status detection and monitoring
+- Local data caching for offline viewing
+- Queued actions for offline created content
+- Synchronization when connection is restored
+- Visual indicators of offline status
+- Graceful error handling for network failures
+
+4.8 USER PROFILES
+---------------
+- Customizable user information
+- Profile photo upload and management
+- Bio and personal information display
+- Report history in grid or list view
+- Impact score visualization
+- Level progression tracking
+- Following and followers lists
+- Activity statistics
+
+=============================================================================
+5. DATABASE SCHEMA
+=============================================================================
+
+CleanSphere uses Firebase Firestore as its primary database with the following collections:
+
+users/
+├── [uid]/
+│   ├── displayName: string
+│   ├── email: string
+│   ├── photoURL: string
+│   ├── createdAt: timestamp
+│   ├── bio: string
+│   ├── location: string
+│   ├── userRole: "resident" | "municipal"
+│   ├── isMunicipalAuthority: boolean
+│   ├── points: number
+│   ├── level: string
+│   ├── interests: array<string>
+│   ├── followers: array<string> // UIDs of followers
+│   ├── following: array<string> // UIDs of users being followed
+│   └── imageURL: string
+
+municipal_authorities/
+├── [id]/
+│   ├── name: string
+│   ├── email: string
+│   ├── uid: string // Firebase Auth UID
+│   ├── city: string
+│   ├── region: string
+│   ├── department: string
+│   ├── assignedZones: array<string>
+│   ├── responsibilities: array<string>
+│   ├── resolvedCases: number
+│   ├── imageURL: string
+│   └── verifiedAt: timestamp
+
+reports/
+├── [reportId]/
+│   ├── title: string
+│   ├── description: string
+│   ├── location: geopoint
+│   ├── locationName: string
+│   ├── status: "pending" | "in-progress" | "resolved"
+│   ├── createdAt: timestamp
+│   ├── updatedAt: timestamp
+│   ├── resolvedAt: timestamp
+│   ├── userId: string // Reporter's UID
+│   ├── userName: string
+│   ├── userAvatar: string
+│   ├── imageBase64: string // Report image (encoded)
+│   ├── imageUrl: string // Report image (URL)
+│   ├── afterImageBase64: string // Resolution image (encoded)
+│   ├── afterImageUrl: string // Resolution image (URL)
+│   ├── resolvedBy: string // Municipal authority UID
+│   ├── resolutionNotes: string
+│   ├── likes: array<string> // UIDs of users who liked
+│   ├── commentCount: number
+│   └── comments/ (subcollection)
+│       ├── [commentId]/
+│       │   ├── userId: string
+│       │   ├── userName: string
+│       │   ├── userAvatar: string
+│       │   ├── text: string
+│       │   └── timestamp: timestamp
+
+users/[uid]/notifications/ (subcollection)
+├── [notificationId]/
+│   ├── type: "like" | "comment" | "follow" | "resolution" | "system"
+│   ├── reportId: string
+│   ├── userId: string // User who triggered notification
+│   ├── username: string
+│   ├── text: string
+│   ├── read: boolean
+│   └── createdAt: timestamp
+
+=============================================================================
+6. AUTHENTICATION SYSTEM
+=============================================================================
+
+CleanSphere implements a comprehensive authentication system through the AuthContext provider:
+
+Core Authentication Features:
+- Email/password authentication
+- Google Sign-In (for resident users only)
+- Municipal authority specialized authentication flow
+- Persistent authentication state
+- Automatic session renewal
+
+Authentication Lifecycle:
+1. User initiates login/signup process
+2. Credentials validated against Firebase Auth
+3. On successful auth, user document fetched/created in Firestore
+4. User role determined (resident vs. municipal)
+5. Authentication state stored in context and AsyncStorage
+6. Navigation state updated based on authentication status
+
+Municipal Authority Authentication:
+- Special verification against municipal_authorities collection
+- Additional security checks for authorization
+- Role-specific data loaded on authentication
+- Authority-specific UI rendered upon verification
+
+Security Measures:
+- Firebase Auth token-based authentication
+- Secure credential storage using AsyncStorage
+- Server-side validation of authority credentials
+- Firebase security rules restricting collection access
+- Role-based permission enforcement
+
+Implementation Details:
+- AuthContext provides global authentication state
+- useAuth() hook for component-level auth access
+- Auto-logout on token expiration
+- Network-aware authentication state management
+- Comprehensive error handling for auth failures
+
+=============================================================================
+7. SCREEN DESCRIPTIONS
+=============================================================================
+
+7.1 LOGIN/SIGNUP SCREENS
+----------------------
+LoginScreen.js:
+- Email/password login form
+- Google Sign-In integration
+- Role selection (resident/municipal)
+- Form validation with error handling
+- "Forgot Password" functionality
+- Link to signup for new users
+- Network status indication
+- Loading indicators during authentication
+
+SignUpScreen.js:
+- New user registration form
+- Email/password validation
+- Terms of service acceptance
+- User role selection (restricted municipal registration)
+- Form input validation
+- Success feedback and login redirection
+
+7.2 MAIN NAVIGATION SCREENS
+-------------------------
+HomeScreen.js:
+- Dynamic feed of cleanliness reports
+- Filtering options by status and category
+- Role-specific interfaces (resident vs. municipal)
+- Report card UI with social engagement metrics
+- Pull-to-refresh functionality
+- Floating action button for new reports (residents only)
+- Municipal dashboard features for authority users
+- Network status indicators
+
+ReportScreen.js:
+- Photo capture interface with camera access
+- Location detection with permission handling
+- Form inputs for report details
+- Step-by-step guidance for report creation
+- Offline support for draft saving
+- Submission confirmation and feedback
+- Image compression and optimization
+
+ProfileScreen.js:
+- User information display
+- Profile statistics (reports, followers)
+- Impact score visualization
+- Level progression tracking
+- Report history in grid/list views
+- Edit profile functionality
+- Municipal authority special fields
+- Logout option
+- Follow/following management
+
+NotificationsScreen.js:
+- List of user notifications
+- Read/unread status indicators
+- Notification categorization
+- Action buttons for notification responses
+- Mark all as read functionality
+- Empty state handling
+- Pull-to-refresh for new notifications
+
+7.3 DETAIL SCREENS
+----------------
+ReportDetailScreen.js:
+- Comprehensive report information
+- High-resolution image display
+- Status information with timestamps
+- User attribution with profile links
+- Comment section with real-time updates
+- Like functionality
+- Municipal action buttons (for authorities)
+- Resolution information display
+- Before/after image comparison (for resolved reports)
+
+UserProfileScreen.js:
+- View other users' profiles
+- Follow/unfollow functionality
+- User statistics and impact scores
+- Report history with filtering
+- Activity summary
+- Connection status information
+
+7.4 ACTION SCREENS
+----------------
+ReportActionScreen.js:
+- Municipal authority interface for report resolution
+- Status update controls
+- Resolution notes input
+- "After" image capture and upload
+- Resolution confirmation
+- Notification triggers to report creator
+
+EditProfileScreen.js:
+- User profile information editing
+- Profile photo management
+- Bio and location updating
+- Interest tags management
+- Municipal-specific fields for authority users
+- Form validation and error handling
+
+CommunityScreen.js:
+- Community engagement features
+- Trending reports
+- Top contributors
+- Community statistics
+- Challenge participation (planned feature)
+
+=============================================================================
+8. STATE MANAGEMENT
+=============================================================================
+
+CleanSphere uses a combination of state management approaches:
+
+GLOBAL STATE (React Context API):
+- AuthContext: User authentication state and methods
+- NetworkContext: Network connectivity status
+- ThemeContext (implicit via theme.js): App styling themes
+
+LOCAL COMPONENT STATE (useState/useReducer):
+- Form inputs and validation
+- UI interaction states (expanded/collapsed elements)
+- Screen-specific filtering and sorting options
+- Pagination and loading states
+
+DATA PERSISTENCE:
+- AsyncStorage: Token storage, user preferences
+- Firestore: Cloud database for all app data
+- WatermelonDB: Local database for offline support
+
+STATE SYNCHRONIZATION:
+- Real-time listeners for Firestore updates
+- Network status monitoring for online/offline transitions
+- Authentication state persistence between sessions
+- Event emitter system for cross-component communication
+
+Implementation Pattern:
+- Context providers wrap the application root
+- Custom hooks expose context values to components
+- Components consume state via hooks
+- Optimistic UI updates for responsive feel
+- Background synchronization for offline changes
+
+=============================================================================
+9. OFFLINE FUNCTIONALITY
+=============================================================================
+
+CleanSphere implements sophisticated offline support through multiple mechanisms:
+
+NETWORK DETECTION:
+- NetworkContext monitors connectivity status
+- Visual indicators in UI for offline state
+- Graceful degradation of features when offline
+- Connection-aware API calls
+
+DATA CACHING:
+- WatermelonDB for local database storage
+- Firebase offline persistence configuration
+- AsyncStorage for authentication tokens and preferences
+- In-memory caching for active session data
+
+OFFLINE ACTIONS:
+- Queue system for actions created while offline
+- Local state updates for optimistic UI
+- Background synchronization when connection returns
+- Conflict resolution for simultaneous online/offline changes
+
+USER EXPERIENCE:
+- Loading states with appropriate messaging
+- Disabled actions that require connectivity
+- Read-only access to cached data when offline
+- Auto-retry mechanisms for failed operations
+
+IMPLEMENTATION DETAILS:
+- @react-native-community/netinfo for network status detection
+- Firebase Firestore offline persistence configuration
+- Custom synchronization logic in application services
+- Background task scheduling for sync operations
+- Error handling specific to connectivity issues
+
+=============================================================================
+10. COMPONENT STRUCTURE
+=============================================================================
+
+CleanSphere follows a consistent component architecture throughout the application:
+
+SCREENS (src/screens/):
+- Top-level components representing full app views
+- Handle navigation and screen-specific logic
+- Connect to global state via context hooks
+- Orchestrate component composition
+
+CONTEXT PROVIDERS (src/contexts/):
+- Global state management
+- Authentication (AuthContext.js)
+- Network connectivity (NetworkContext.js)
+- Theme and styling (theme.js)
+
+NAVIGATION (src/navigation/):
+- Navigation structure definition
+- Route configuration
+- Screen transitions
+- Authentication-aware navigation state
+
+CONFIGURATION (src/config/):
+- Firebase setup (firebase.js)
+- Service initialization
+- Environment-specific configuration
+
+UTILITY FUNCTIONS (src/utils/):
+- Shared business logic
+- Helper functions
+- Event handling (events.js)
+- Data transformation
+
+ASSETS (src/assets/):
+- Images, icons, and static resources
+- Localization files
+- Font definitions
+
+DESIGN PATTERNS:
+- Container/Presenter pattern for complex screens
+- Custom hooks for reusable logic
+- Memoization for performance optimization
+- Component composition for UI reusability
+- React Navigation for screen management
+
+=============================================================================
+11. FUTURE DEVELOPMENT PLANS
+=============================================================================
+
+SHORT-TERM PRIORITIES (NEXT 3 MONTHS):
+- Enhanced map integration for geographical visualization of reports
+- Advanced filtering and search capabilities
+- Performance optimizations for image handling
+- Push notification implementation using Firebase Cloud Messaging
+- Expanded analytics for municipal authorities
+
+MEDIUM-TERM GOALS (3-6 MONTHS):
+- Gamification features (badges, challenges, leaderboards)
+- Integration with municipal open data platforms
+- Community discussion forums
+- Event organization tools for community cleanup initiatives
+- Multi-language support through localization
+
+LONG-TERM VISION (6+ MONTHS):
+- AI-assisted report categorization and prioritization
+- Predictive analytics for cleanliness issue prevention
+- Blockchain integration for transparent impact tracking
+- AR features for interactive cleanliness education
+- Integration with smart city infrastructure
+
+TECHNICAL ROADMAP:
+- Complete TypeScript migration for enhanced code safety
+- Component library extraction for reusability
+- Test coverage expansion
+- CI/CD pipeline optimization
+- Performance monitoring and optimization
+
+=============================================================================
+12. PERFORMANCE CONSIDERATIONS
+=============================================================================
+
+CleanSphere implements various optimizations to ensure smooth performance:
+
+IMAGE HANDLING:
+- Client-side image compression before upload
+- Progressive loading for image display
+- Caching of downloaded images
+- Lazy loading for off-screen content
+- Thumbnail generation for list views
+
+RENDERING OPTIMIZATIONS:
+- React.memo for pure component memoization
+- useCallback for stable function references
+- useMemo for expensive calculations
+- Virtual list implementations with FlatList
+- Window size optimization for large lists
+
+DATA MANAGEMENT:
+- Pagination for large data sets
+- Incremental loading patterns
+- Query optimization for Firestore
+- Local caching for frequently accessed data
+- Background data prefetching
+
+RESOURCE MANAGEMENT:
+- Proper cleanup of subscriptions and listeners
+- Memory leak prevention in component lifecycles
+- Efficient location services usage
+- Background resource release
+- Component unmounting cleanup
+
+FIREBASE OPTIMIZATION:
+- Optimized security rules for query performance
+- Efficient data structure design
+- Indexing strategy for common queries
+- Batch operations for multiple updates
+- Careful listener management to avoid redundancy
+
+=============================================================================
+13. SECURITY IMPLEMENTATION
+=============================================================================
+
+CleanSphere prioritizes security throughout the application:
+
+AUTHENTICATION SECURITY:
+- Firebase Authentication for secure credential management
+- JWT token-based authentication
+- Secure token storage using AsyncStorage
+- Session timeout and automatic renewal
+- HTTPS communication for all API calls
+
+DATA SECURITY:
+- Firestore security rules for access control
+- Field-level security for sensitive data
+- Server-side validation of client requests
+- Data sanitization before storage
+- Principle of least privilege in data access
+
+USER PRIVACY:
+- Optional anonymity for report submissions
+- Profile privacy settings
+- Location data protection
+- Clear data usage policies
+- GDPR-compliant data handling
+
+CODE SECURITY:
+- Environment variable management for sensitive keys
+- No hardcoded credentials or secrets
+- Input validation and sanitization
+- Protection against common vulnerabilities
+- Regular dependency updates for security patches
+
+OPERATIONAL SECURITY:
+- Firebase-managed backend security
+- Regular security reviews
+- Penetration testing
+- Secure deployment processes
+- Monitoring for unusual activity
+
+=============================================================================
+                      END OF PROJECT DOCUMENTATION
+=============================================================================
+
+Document Version: 1.0
+Last Updated: April 16, 2025
+Prepared by: CleanSphere Development Team

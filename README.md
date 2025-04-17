@@ -1,97 +1,219 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# CleanSphere - Urban Cleanliness Tracker
 
-# Getting Started
+![CleanSphere Logo](./src/assets/logo.jpg)
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Overview
 
-## Step 1: Start Metro
+CleanSphere is a comprehensive React Native mobile application designed to facilitate community involvement in urban cleanliness initiatives. The platform connects residents and municipal authorities, allowing users to report, track, and resolve cleanliness issues in their communities.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Table of Contents
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [User Roles](#user-roles)
+- [Installation](#installation)
+- [Project Structure](#project-structure)
+- [Authentication](#authentication)
+- [Screens](#screens)
+- [Data Management](#data-management)
+- [Offline Support](#offline-support)
+- [License](#license)
 
-```sh
-# Using npm
+## Features
+
+### Core Features
+
+1. **User Authentication**
+   - Email/password login and registration
+   - Google Sign-In integration (for residents)
+   - Secure authentication with Firebase Auth
+   - Persistent login state
+
+2. **Reporting System**
+   - Photo-based issue reporting
+   - Automatic location detection
+   - Detailed issue description
+   - Real-time status tracking
+
+3. **Community Engagement**
+   - Report likes and comments
+   - User profiles with impact scores
+   - Follow/unfollow other users
+   - Activity feed of reports
+
+4. **Municipal Dashboard**
+   - Dedicated interface for authority users
+   - Report management and resolution
+   - Before/after image documentation
+   - Geographical area management
+
+5. **Notification System**
+   - Real-time notifications for report status changes
+   - Comment notifications
+   - Like notifications
+   - Follow notifications
+
+6. **User Profiles**
+   - Impact score tracking based on resolved reports
+   - User level progression system
+   - Report history with grid and list views
+   - Profile customization (bio, avatar, location)
+
+7. **Location Services**
+   - GPS-based location detection
+   - Reverse geocoding for human-readable addresses
+   - Map-based report visualization
+
+8. **Offline Support**
+   - Network status detection
+   - Graceful degradation for offline users
+   - Data synchronization when back online
+
+## Technology Stack
+
+- **Frontend**: React Native (v0.78.2)
+- **UI Components**: React Native Paper, React Native Vector Icons
+- **Navigation**: React Navigation (v7.x)
+- **State Management**: React Context API
+- **Backend/Database**: Firebase Firestore
+- **Authentication**: Firebase Authentication
+- **Storage**: Firebase Storage
+- **Location Services**: React Native Geolocation Service, Nominatim API
+- **Media Handling**: React Native Image Crop Picker, React Native Vision Camera
+- **Data Persistence**: WatermelonDB, AsyncStorage
+
+## User Roles
+
+### Resident Users
+- Create and submit reports about cleanliness issues
+- Like and comment on reports
+- Follow other users and municipal authorities
+- Track personal impact score and level progression
+
+### Municipal Authority Users
+- Access dedicated dashboard for issue management
+- Mark reports as resolved with documentation
+- Upload "after" images showing resolved issues
+- Manage assigned zones and responsibilities
+
+## Installation
+
+### Prerequisites
+- Node.js ≥ 18
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development)
+
+### Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/cleansphere.git
+cd cleansphere
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables (.env file):
+```
+FIREBASE_API_KEY=your_api_key
+FIREBASE_AUTH_DOMAIN=your_auth_domain
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_STORAGE_BUCKET=your_storage_bucket
+FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+FIREBASE_APP_ID=your_app_id
+GOOGLE_WEB_CLIENT_ID=your_google_web_client_id
+```
+
+4. Start the Metro bundler:
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+5. Build and run on Android:
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+6. Build and run on iOS:
+```bash
+cd ios && pod install
+cd ..
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Project Structure
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```
+cleansphere/
+├── src/
+│   ├── assets/             # Images and static resources
+│   ├── config/             # Configuration files (Firebase setup)
+│   ├── contexts/           # React Context providers
+│   ├── navigation/         # Navigation configuration
+│   ├── screens/            # UI screens
+│   ├── theme/              # Theme configuration
+│   └── utils/              # Utility functions
+├── android/                # Android-specific files
+├── ios/                    # iOS-specific files
+└── package.json            # Project dependencies
+```
 
-## Step 3: Modify your app
+## Authentication
 
-Now that you have successfully run the app, let's make changes!
+CleanSphere offers multiple authentication methods:
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+1. **Email/Password**: Traditional authentication for both resident and municipal users
+2. **Google Sign-In**: Social authentication option for resident users only
+3. **Municipal Authority**: Special authentication flow for verified municipal authorities
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+Authentication state is persisted using AsyncStorage to provide a seamless user experience between app launches.
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## Screens
 
-## Congratulations! :tada:
+### For All Users
+- **LoginScreen**: User authentication with email/password or Google
+- **SignUpScreen**: New user registration
+- **HomeScreen**: Feed of reports with filtering options
+- **ReportDetailScreen**: Detailed view of a report with comments
+- **ProfileScreen**: User profile with reports and statistics
+- **UserProfileScreen**: View other users' profiles
+- **NotificationsScreen**: All user notifications
 
-You've successfully run and modified your React Native App. :partying_face:
+### For Resident Users
+- **ReportScreen**: Create new cleanliness reports with photos and location
+- **EditProfileScreen**: Update user profile information
 
-### Now what?
+### For Municipal Users
+- **ReportActionScreen**: Upload resolution evidence for reports
+- **Municipal Dashboard**: (Integrated in HomeScreen) Special view for authorities
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+## Data Management
 
-# Troubleshooting
+CleanSphere uses Firebase Firestore as its primary database with the following collections:
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- **users**: User profile information
+- **municipal_authorities**: Municipal authority details
+- **reports**: Cleanliness reports with details
+- **comments**: Comments on reports (subcollection)
+- **notifications**: User notifications (subcollection)
 
-# Learn More
+## Offline Support
 
-To learn more about React Native, take a look at the following resources:
+The app includes a NetworkContext provider that monitors network connectivity status and enables:
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- Visual indicators when offline
+- Graceful error handling for failed operations
+- Ability to view cached data when offline
+- Automatic retries when connection is restored
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+© 2025 CleanSphere. All rights reserved.

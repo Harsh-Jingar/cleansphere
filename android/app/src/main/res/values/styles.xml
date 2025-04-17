@@ -4,6 +4,20 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        
+        <!-- Apply our green theme colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+        
+        <!-- Status bar styling - updated to match navigation bar -->
+        <item name="android:statusBarColor">@color/primary</item>
+        
+        <!-- Navigation bar styling (bottom bar with back/home buttons) -->
+        <item name="android:navigationBarColor">@color/primary</item>
+        
+        <!-- Window background color -->
+        <item name="android:windowBackground">@color/background</item>
     </style>
 
 </resources>
