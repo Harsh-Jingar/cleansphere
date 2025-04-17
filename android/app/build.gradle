@@ -3,7 +3,11 @@ apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
 
-
+// Add this block to load environment variables from .env file
+project.ext.envConfigFiles = [
+    debug: ".env",
+    release: ".env",
+]
 
 project.ext.react = [
     enableHermes: false
@@ -17,6 +21,18 @@ def enableProguardInReleaseBuilds = false
 
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+// Helper function to get API key from .env file
+def getEnvVariable = { key ->
+    def envFile = project.ext.envConfigFiles[project.ext.envConfigFiles.debug]
+    def envVars = new Properties()
+    def envFile_obj = rootProject.file(envFile)
+    if (envFile_obj.exists()) {
+        envVars.load(new FileInputStream(envFile_obj))
+        return envVars.getProperty(key)
+    }
+    return System.getenv(key) ?: ""
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -29,6 +45,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        
+        // Add Google Maps API key from .env file
+        resValue "string", "google_maps_api_key", getEnvVariable("GOOGLE_MAPS_API_KEY")
     }
     signingConfigs {
         release {
@@ -69,7 +88,7 @@ dependencies {
 
     implementation "com.google.android.gms:play-services-auth:20.5.0"
     // Add Google Play Services Location dependency
-implementation "com.google.android.gms:play-services-location:21.0.1"
+    implementation "com.google.android.gms:play-services-location:21.0.1"
     // React Native Vector Icons
     implementation project(':react-native-vector-icons')
 }

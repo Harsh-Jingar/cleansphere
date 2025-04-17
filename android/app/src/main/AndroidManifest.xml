@@ -22,10 +22,10 @@
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
 
-        <!-- ✅ ADD THIS LINE FOR GOOGLE MAPS API KEY -->
+        <!-- ✅ UPDATED: Google Maps API key from environment variables -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC8jefCPeV7l9DKg6Z66DKa5sC4CyGPLP4" />
+            android:value="@string/google_maps_api_key" />
 
         <activity
             android:name=".MainActivity"
