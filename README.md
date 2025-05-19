@@ -1,6 +1,7 @@
 # CleanSphere - Urban Cleanliness Tracker
-
-![CleanSphere Logo](./src/assets/logo.jpg)
+<p align="center">
+<img src="https://github.com/Harsh-Jingar/cleansphere/blob/main/src/assets/logo.jpg" height="300" width="300">
+</p>
 
 ## Overview
 
@@ -209,6 +210,24 @@ The app includes a NetworkContext provider that monitors network connectivity st
 - Graceful error handling for failed operations
 - Ability to view cached data when offline
 - Automatic retries when connection is restored
+
+## Team Members:
+
+| S.No. | Name | Role | GitHub Username:octocat: |
+| --------------- | --------------- | --------------- | --------------- |
+| 1. | Harsh Jingar | Backend (React-native + firebase) | [@Harsh-Jingar](https://github.com/Harsh-Jingar)  |
+| 2. | Harsh Chauhan | Frontend Development | [@GitHarsh1511](https://github.com/GitHarsh1511) |
+| 3. | Divyesh kariya  | Ui/Ux Development | [@kariya2qr](https://github.com/kariya2qr) |
+
+## Maintainers✨
+
+<table>
+  <tbody><tr>
+    <td align="center"><a href="https://github.com/Harsh-Jingar"><img alt="" src="https://avatars.githubusercontent.com/Harsh-Jingar" width="100px;"><br><sub><b>Harsh Jingar</b></sub></a><br><a href="https://github.com/Harsh-Jingar/cleansphere" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/GitHarsh1511"><img alt="" src="https://avatars.githubusercontent.com/GitHarsh1511" width="100px;"><br><sub><b>Harsh Chauhan</b></sub></a><br><a href="https://github.com/Harsh-Jingar/cleansphere" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/kariya2qr"><img alt="" src="https://avatars.githubusercontent.com/kariya2qr" width="100px;"><br><sub><b>Divyesh Kariya</b></sub></a><br><a href="https://github.com/Harsh-Jingar/cleansphere" title="Code">💻</a></td>
+  </tr>
+</tbody></table>
 
 ## License
 
