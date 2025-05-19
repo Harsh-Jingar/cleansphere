@@ -231,7 +231,7 @@ The app includes a NetworkContext provider that monitors network connectivity st
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the <a href="https://github.com/Harsh-Jingar/cleansphere?tab=MIT-1-ov-file" >MIT LICENSE</a> for details.
 
 ---
 
